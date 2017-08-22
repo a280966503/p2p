@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block headBody %}
+<!-- 网页顶部导航 -->
+<div class="el-header">
+    <div class="container" style="position: relative;">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">首页</a></li>
+            {% if username %}
+            <li>
+                <a class="el-current-user" href="/personal/">{{username}}</a>
+            </li>
+            <li><a href="/recharge.do">账户充值 </a></li>
+            <li><a href="/logout.do">注销 </a></li>
+            {% else %}
+            <li><a href="/user/login/">登录</a></li>
+            <li><a href="/user/register/">快速注册</a></li>
+            {% endif %}
+            <li><a href="#">帮助</a></li>
+        </ul>
+    </div>
+</div>
+<!-- 网页导航 -->
+<!-- 在当前的freemarker的上下文中,添加一个变量,变量的名字叫currentNav,变量的值叫personal -->
+<!--<#assign currentNav="personal" /> <#include "common/navbar-tpl.ftl" />-->
+<div class="navbar navbar-default el-navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/">
+                <img alt="Brand" src="/static/images/logo.png">
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li id="index"><a href="/index.do">首页</a></li>
+            <li id="invest"><a href="/invest.do">我要投资</a></li>
+            <li id="borrow"><a href="/borrow.do">我要借款</a></li>
+            <li id="personal"><a href="/personal/">个人中心</a></li>
+            <li><a href="#">新手指引</a></li>
+            <li><a href="#">关于我们</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="row">
+        <!--导航菜单-->
+        <div class="col-sm-3">
+            <!--<#assign currentMenu="personal" />-->
+            <!--<#include "common/leftmenu-tpl.ftl" />-->
+            <ul id="menu" class="list-group">
+                <li class="list-group-item">
+                    <a href="javascript:;"><span>借贷项目</span></a>
+                    <ul>
+                        <li name="bid"><a href="/bid_list.do"><span>投标明细</span></a></li>
+                        <li name="receive"><a href="#"><span>收款明细</span></a></li>
+                        <li name="bidRequest"><a href="/borrow_list.do"><span>借款项目</span></a></li>
+                        <li name="borrowBidReturn"><a href="/borrowBidReturn_list.do"><span>还款明细</span></a></li>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <a href="#"><span class="text-title">我的账户</span></a>
+                    <ul class="in">
+                        <li name="account"><a href="/personal/">账户信息</a></li>
+                        <li name="realAuth"><a href="/personal/realAuth/">实名认证</a></li>
+                        <li name="userFile"><a href="/personal/userFile/">风控资料认证</a></li>
+                        <li name="bankInfo"><a href="/personal/bankInfo/">银行卡管理</a></li>
+                        <li name="ipLog"><a href="/personal/ipLog/">登录记录</a></li>
+                        <li name="userInfo"><a href="/personal/userInfo/"> <span>个人资料</span></a></li>
+                    </ul>
+                </li>
+                <li class="list-group-item">
+                    <a href="#"><span>资产详情</span></a>
+                    <ul class="in">
+                        <li name="accountFlow_list"><a href="">账户流水</a></li>
+                        <li name="recharge"><a href="/recharge_list.do">充值明细</a></li>
+                        <li name="moneyWithdraw"><a href="/moneyWithdraw.do">提现申请</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        {% block containerClass %}{% endblock containerClass %}
+    </div>
+</div>
+{% if currentMenu %}
+<script type="text/javascript">
+	$(".list-group-item li[name={{currentMenu}}]").addClass("active");
+</script>
+{% endif %}
+{% endblock headBody %}

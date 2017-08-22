@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>蓝源Eloan-P2P平台->用户注册</title>
+<link rel="stylesheet" href="/static/js/bootstrap-3.3.2-dist/css/bootstrap.css" type="text/css"/>
+<link rel="stylesheet" href="/static/css/core.css" type="text/css"/>
+<script type="text/javascript" src="/static/js/jquery/jquery-2.1.3.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-3.3.2-dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/plugins/jquery-validation/jquery.validate.js"></script>
+<script type="text/javascript" src="/static/js/plugins/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/jquery.bootstrap.min.js"></script>
+
+<style type="text/css">
+    .el-register-form {
+        width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+    }
+
+    .el-register-form .form-control {
+        width: 220px;
+        display: inline;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+
+        //判断用户名是否存在
+//        function check_user_name() {
+//            $.get('/user/registerNameCheck/?username=' + $('#username').val(), function (data) {
+//                console.assert(data)
+//                if (data.count > 0) {
+//                    $('#username_p').html('用户名已经存在');
+//                    $('#username_p').removeClass('help-block');
+//                    $('#username_p').addClass('text-danger');
+//                    alert(1)
+//                } else {
+//                    $('#username_p').html('用户名为4~16位字母，数字，符号或中文');
+//                    $('#username_p').addClass('help-block');
+//                    $('#username_p').removeClass('text-danger');
+//                    alert(2)
+//                }
+//            });
+//        }
+
+        function check_user_name() {
+            $.ajax({
+            type: 'POST',
+            url: '/user/registerNameCheck/',
+            data: {'username':$('#username').val()},
+            success: function (data) {
+                if (data.count > 0) {
+                    $('#username_p').html('用户名已经存在');
+                    $('#username_p').removeClass('help-block');
+                    $('#username_p').addClass('text-danger');
+                    alert(1)
+                } else {
+                    $('#username_p').html('用户名为4~16位字母，数字，符号或中文');
+                    $('#username_p').addClass('help-block');
+                    $('#username_p').removeClass('text-danger');
+                    alert(2)
+                }
+            },
+            dataType: 'json'
+});
+        }
+
+
+        //失去光标后调用
+        $('#username').blur(function () {
+            check_user_name();
+        });
+
+        $("#registerForm").validate({
+            rules: {
+                username: {
+                    required: true,
+                    rangelength: [4, 16],
+
+                },
+                password: {
+                    required: true,
+                    rangelength: [4, 20]
+                },
+                confirmPwd: {
+                    required: true,
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                username: {
+                    required: "请填写用户名!",
+                    rangelength: "用户名长度必须在{0}-{1}之间!",
+                },
+                password: {
+                    required: "请填写密码!",
+                    rangelength: "密码长度必须在{0}-{1}之间!"
+                },
+                confirmPwd: {
+                    required: "请再次确认密码",
+                    equalTo: "两次密码不一致"
+                }
+            },
+            submitHandler: function (form) {
+                $("#registerForm").ajaxSubmit({
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            $.messager.confirm("提示", "注册成功", function () {
+                                window.location.href = '/user/login/'
+                            })
+                        } else {
+                            $.messager.popup("注册失败!")
+                        }
+                    }
+                });
+            },
+            errorClass: "text-danger",
+            highlight: function (element) {
+                $(element).closest("div.form-group").addClass("has-error");
+            },
+            unhighlight: function (element) {
+                $(element).closest("div.form-group").removeClass("has-error");
+            }
+        })
+
+    })
+</script>
+{% endblock head %}
+
+{% block body %}
+
+
+<!-- 网页头信息 -->
+<div class="el-header">
+    <div class="container" style="position: relative;">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">首页</a></li>
+            <li><a href="/user/login/">登录</a></li>
+            <li><a href="#">帮助</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- 网页导航 -->
+<div class="navbar navbar-default el-navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <a href=""><img alt="Brand" src="/static/images/logo.png"></a>
+            <span class="el-page-title">用户注册</span>
+        </div>
+    </div>
+</div>
+
+<!-- 网页内容 -->
+<div class="container">
+
+    <form id="registerForm" class="form-horizontal el-register-form" action="/user/registerSubmit/" method="post">
+        {% csrf_token %}
+        <p class="h4" style="margin: 10px 10px 20px;color:#999;">请填写注册信息，点击“提交注册”即可完成注册！</p>
+        <div class="form-group">
+            <label class="control-label col-sm-2">用户名</label>
+            <div class="col-sm-10">
+                <input type="text" autocomplete="off" name="username" class="form-control" id="username"/>
+                <p class="help-block text-success" id="username_p">用户名为4~16位字母，数字，符号或中文</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">密&emsp;码</label>
+            <div class="col-sm-10">
+                <input type="password" autocomplete="off" name="password" id="password" class="form-control"/>
+                <p class="help-block">密码为4~16位字符组成,采用数字、字母、符号安全性更高</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">确认密码</label>
+            <div class="col-sm-10">
+                <input type="password" autocomplete="off" name="confirmPwd" class="form-control"/>
+                <p class="help-block">请再次填写密码</p>
+            </div>
+        </div>
+        <div class="form-gorup">
+            <div class="col-sm-offset-2">
+                <button type="submit" class="btn btn-success">
+                    同意协议并注册
+                </button>
+                &emsp;&emsp;
+                <a href="/login.html" class="text-primary">已有账号，马上登录</a>
+
+                <p style="padding-left: 50px;margin-top: 15px;">
+                    <a href="#">《使用协议说明书》</a>
+                </p>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock body %}
